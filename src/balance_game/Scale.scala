@@ -19,7 +19,7 @@ class Scale(emblem: Char, radius: Int) extends Mass {
     mass
   }
   
-  def leftWeight: Int = sideWeight(leftArm)
+  def leftWeight: Int = sideWeight(leftArm) //Might be wise to save the weights into variables.
   def rightWeight: Int = sideWeight(rightArm)
   
   def totalWeight = leftWeight + rightWeight
