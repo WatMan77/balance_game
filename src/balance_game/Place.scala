@@ -1,10 +1,12 @@
 package balance_game
 import scala.collection.mutable.Buffer
 
-class Place(distance: Int) { //Each place needs it's distance from the center.
+class Place(place: Int) { //Each place needs it's distance from the center.
   
   var objects = Buffer[Mass]() //Each (Mass) object on this particular 'Place'-object
+  val distance = this.place
   
+  //Should probably make a second method which simply counts the weights as 1 and not *distance
   def countMass: Int = {
     var weight = 0
     for(item <- objects) {
