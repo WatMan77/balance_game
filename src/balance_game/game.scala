@@ -15,7 +15,7 @@ class Game(player1: Player, player2: Player) {
     currentPlayer = allPlayers((allPlayers.indexOf(currentPlayer) + 1) % 2)
   }
   
-  def addScale(scaleName: Char, distance: Int, side: String, radius: Int, name: Char ) = {
+  def addScale(scaleName: Char, distance: Int, side: String, newRadius: Int, name: Char ) = {
     allScales.find(n => n.name == scaleName) match {
       
       case Some(scale) => { //Scale might've been found but do other parameters match with the scale?
@@ -24,7 +24,7 @@ class Game(player1: Player, player2: Player) {
           "Invalid distance. Try again" 
           
         } else {
-          val item =  new Scale(name, radius)
+          val item =  new Scale(name, newRadius)
           allScales += item
           if(side == "right") {
             scale.rightArm(distance - 1).objects += item

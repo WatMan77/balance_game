@@ -12,21 +12,23 @@ class Scale(emblem: Char, radius: Int) extends Mass {
   
   val weight = 0 // The weight of a scale is 0 and thus doesn't tilt another scale if it is empty.
   
-  def sideWeight(items: Buffer[Place]) = {
+  def sideTilt(items: Buffer[Place]) = {
     var mass = 0
     for(place <- items) {
-      mass += place.countMass
+      mass += place.countMassTilt
     }
     mass
   }
   
-  def leftWeight: Int = sideWeight(leftArm) //Might be wise to save the weights into variables.
+  def leftTilt: Int = sideTilt(leftArm) //Might be wise to save the weights into variables.
   
-  def rightWeight: Int = sideWeight(rightArm)
+  def rightTilt: Int = sideTilt(rightArm)
   
-  def isImbalanced = if( math.abs(leftWeight - rightWeight) >= radius) true else false
+  def isImbalanced = if( math.abs(leftTilt - rightTilt) >= radius) true else false
   
-  def totalWeight = leftWeight + rightWeight
+  def totalMoment = leftTilt - rightTilt //This is with distance!
+  
+  def totalWeight = ???
   
   override def toString = "I am a scale!"
 }
