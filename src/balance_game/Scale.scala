@@ -10,7 +10,24 @@ class Scale(emblem: Char, radius: Int) extends Mass {
   val rightArm = Buffer.tabulate(radius)(n => new Place(n + 1))
  // var isImbalanced = false
   
-  val weight = 0 // The weight of a scale is 0 and thus doesn't tilt another scale if it is empty.
+  
+  def weight: Int = {
+    
+    var total = 0
+    for(place <- leftArm) {
+      for(item <- place.objects) {
+       total += item.weight
+      }
+    }
+    
+    for(place <- rightArm) {
+      for(item <- place.objects) {
+        total += item.weight
+      }
+    }
+      
+    total
+  }
   
   def sideTilt(items: Buffer[Place]) = {
     var mass = 0
@@ -27,8 +44,6 @@ class Scale(emblem: Char, radius: Int) extends Mass {
   def isImbalanced = if( math.abs(leftTilt - rightTilt) >= radius) true else false
   
   def totalMoment = leftTilt - rightTilt //This is with distance!
-  
-  def totalWeight = ???
   
   override def toString = "I am a scale!"
 }

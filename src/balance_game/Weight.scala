@@ -3,8 +3,8 @@ package balance_game
 
 class Weight(var owner: Player) extends Mass {
   //Owner of the weight can change
-  val weight = 1
-  def totalWeight = this.weight
+  private val _weight = 1
+  def weight = this._weight
   def changeOwner(player: Player) = {
     owner = player
   }

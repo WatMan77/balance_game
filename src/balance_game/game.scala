@@ -15,6 +15,12 @@ class Game(player1: Player, player2: Player) {
     currentPlayer = allPlayers((allPlayers.indexOf(currentPlayer) + 1) % 2)
   }
   
+  def playerPoints {
+    for(person <- allPlayers) {
+      person.points = allWeights.filter(_.owner == person).size
+    }
+  }
+  
   def addScale(scaleName: Char, distance: Int, side: String, newRadius: Int, name: Char ) = {
     allScales.find(n => n.name == scaleName) match {
       
@@ -33,6 +39,7 @@ class Game(player1: Player, player2: Player) {
           }
         }    
         //The turn should advance i.e the other player 
+        playerPoints
         nextPlayer
       }
       
@@ -71,8 +78,9 @@ class Game(player1: Player, player2: Player) {
         //Because a weight is always put on top, it quite easy to change all the weights below it to the current player.
         if(foundImbalance == false){
          val weightsBeneath = thePlace.filter(_.isInstanceOf[Weight]).map(_.asInstanceOf[Weight])
-         if(!weightsBeneath.forall(_.owner == currentPlayer)) currentPlayer.points += weightsBeneath.size - 1
+         weightsBeneath.foreach(_.owner = currentPlayer)
         }
+        playerPoints
         nextPlayer
       }
       

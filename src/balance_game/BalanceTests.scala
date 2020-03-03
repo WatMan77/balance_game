@@ -60,14 +60,26 @@ class BalanceTests {
    
    game.allScales += new Scale('a', 3)
    
-   game.addWeight('a', 1, "left")
-   game.addWeight('a', 1, "right")
+   game.addWeight('a', 1, "left") //Jarmo puts a weight
+   game.addWeight('a', 1, "right") // Irmeli puts a weight
    
    assertEquals(0, game.allScales(0).totalMoment)
    
-   game.addScale('a', 2, "right", 3, 'x')
-   game.addWeight('x', 2, "right")
+   game.addScale('a', 2, "right", 3, 'x') //Jarmo puts a scale
+   game.addWeight('x', 2, "right")        //Irmeli puts a weight
+   
+   assertEquals(2, game.allPlayers.find(n => n.name == "Irmeli").get.points)
+   assertEquals(-2, game.allScales(0).totalMoment)
+   
+   game.addWeight('x', 1, "right") //Jarmo puts a weight which causes an imbalance, so the weight is not put. ie nothing should change
    
    assertEquals(-2, game.allScales(0).totalMoment)
+   assertEquals(2, game.allPlayers.find(n => n.name == "Irmeli").get.points)
+   assertEquals(1, game.allPlayers.find(n => n.name == "Jarmo").get.points)
+   
+   game.addWeight('a', 1, "left") //Irmeli puts a weight on Jarmos weight.
+   
+   assertEquals(0, game.allPlayers.find(n => n.name == "Jarmo").get.points)
+   assertEquals(4, game.allPlayers.find(n => n.name == "Irmeli").get.points)
  }
 }
