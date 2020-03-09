@@ -3,9 +3,18 @@ package balance_game
 import scala.collection.mutable.Buffer
 import org.junit.Test
 import org.junit.Assert._
+import scala.util.Random
 
 class BalanceTests {
   
+  def tellNumber(which: Int): Int = {
+    val a = new Random(568)
+    for(time <- 1 until which) {
+      a.nextInt
+    }
+    a.nextInt
+  }
+ /* 
  @Test def TestA = {
     val scale1 = new Scale('a', 3)
     val david = new Player("David", 'D')
@@ -17,7 +26,7 @@ class BalanceTests {
     assertEquals(3, scale1.distance)
   }
  
-/* @Test def TestB = {
+ @Test def TestB = {
    val scale1 = new Scale('a', 3)
    val david = new Player("David", 'D')
    val mark = new Player("Mark", 'M')
@@ -32,7 +41,7 @@ class BalanceTests {
    assertEquals(6, scale1.totalWeight)
    assertEquals(false, scale1.isImbalanced)
  }*/
- 
+ /*
  @Test def TestGame = {
    val game = new Game( new Player("David", 'D'), new Player("Mark", 'M'))
    
@@ -82,4 +91,49 @@ class BalanceTests {
    assertEquals(0, game.allPlayers.find(n => n.name == "Jarmo").get.points)
    assertEquals(4, game.allPlayers.find(n => n.name == "Irmeli").get.points)
  }
+ 
+ @Test def ComplicatedGame = {
+   val game = new Game(new Player("Tervo", 'T'), new Player("Sami", 'S'))
+   
+   game.allScales += new Scale('a', 4)
+   
+   game.addScale('a', 3, "left", 3, 'b') // Tervo puts a scale
+   game.addScale('b', 2, "right", 3, 'c') //Sami puts a scale
+   game.addScale('a', 4, "right", 2, 'd') //Tervo puts a scale
+   
+   game.addWeight('c', 2, "right") //Sami puts a weight
+   game.addWeight('d', 1, "left") //Tervo puts a weight
+   game.addWeight('a', 1,"left") //Sami puts a weight
+   game.addWeight('b', 2, "left") //Tervo puts a weight
+   
+  assertEquals(4,game.allScales.find(n => n.name == 'a').get.weight)  //Weight of the bottom scale.
+  assertEquals(2, game.allScales.find(n => n.name == 'b').get.weight)
+  assertEquals(1, game.allScales.find(_.name == 'c').get.weight)
+  assertEquals(1, game.allScales.find(_.name == 'd').get.weight)
+  assertEquals(3, game.allScales.find( _.name == 'a').get.totalMoment)
+  assertEquals(0, game.allScales.find(_.name == 'b').get.totalMoment)
+  
+  assertEquals(2,game.allPlayers.find(_.name == "Sami").get.points)
+  assertEquals(2,game.allPlayers.find(_.name == "Tervo").get.points)
+  
+  game.addWeight('a', 1, "right") //Sami adds a weight.  Moment of 'a' 7-5
+  game.addScale('c', 2, "right", 3, 'e') //Scale is put on Sami's weight so the weight should now be Tervo's
+  assertEquals(3, game.allPlayers.find(_.name == "Tervo").get.points)
+  assertEquals(2, game.allPlayers.find(_.name == "Sami").get.points)
+  
+   
+   
+ }
+  */
+  
+  @Test def TestNewScale = {
+   val game = new Game(new Player("Tervo", 'T'), new Player("Sami", 'S'))  
+   game.allScales += new Scale('a', 4) //A scale at the beginning of the game.
+   
+   game.addWeight('a', 2, "right") //Tervo puts a weight
+   assertEquals(1,game.allScales.size)
+   game.addWeight('a', 1, "left") //Sami puts a weight. A new Scale should appear.
+   assertEquals(2, game.allScales.size)
+  }
+  
 }

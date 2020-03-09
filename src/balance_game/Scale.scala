@@ -41,7 +41,7 @@ class Scale(emblem: Char, radius: Int) extends Mass {
   
   def rightTilt: Int = sideTilt(rightArm)
   
-  def isImbalanced = if( math.abs(leftTilt - rightTilt) >= radius) true else false
+  def isImbalanced = if( math.abs(leftTilt - rightTilt) > radius) true else false
   
   def totalMoment = leftTilt - rightTilt //This is with distance!
   

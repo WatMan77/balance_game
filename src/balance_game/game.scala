@@ -10,9 +10,13 @@ class Game(player1: Player, player2: Player) {
   val allPlayers = Vector(player1, player2) //This might be wrong since we need the players from the very beginning.
   var currentPlayer = allPlayers(0) //Player one always starts the game
   var totalPoints = 0
+  var turn = 1
+  private val randomScale = new Random(568)
+  private val sides = Array("left", "right")
   
-  def nextPlayer = {
+  def nextPlayer: Unit = {
     currentPlayer = allPlayers((allPlayers.indexOf(currentPlayer) + 1) % 2)
+    turn += 1
   }
   
   def playerPoints {
@@ -21,7 +25,7 @@ class Game(player1: Player, player2: Player) {
     }
   }
   
-  def addScale(scaleName: Char, distance: Int, side: String, newRadius: Int, name: Char ) = {
+ private def addScale(scaleName: Char, distance: Int, side: String, newRadius: Int, name: Char ) = {
     allScales.find(n => n.name == scaleName) match {
       
       case Some(scale) => { //Scale might've been found but do other parameters match with the scale?
@@ -38,9 +42,7 @@ class Game(player1: Player, player2: Player) {
             scale.leftArm(distance - 1).objects += item
           }
         }    
-        //The turn should advance i.e the other player 
         playerPoints
-        nextPlayer
       }
       
       case None => "Scale '" + scaleName + "' not found. Try again."
@@ -80,7 +82,12 @@ class Game(player1: Player, player2: Player) {
          val weightsBeneath = thePlace.filter(_.isInstanceOf[Weight]).map(_.asInstanceOf[Weight])
          weightsBeneath.foreach(_.owner = currentPlayer)
         }
+        
+        val whichScale = allScales(randomScale.nextInt.abs.toInt % allScales.size) // We need the scale on which we put another scale first so we know its radius.
+        val where = (randomScale.nextInt() % whichScale.distance).abs.toInt + 1 //Which place we put the scale on. 0 is not acceptable       
+        
         playerPoints
+        if(turn % allPlayers.size == 0) addScale( whichScale.name, where, sides(randomScale.nextInt % 2), (randomScale.nextInt.abs.toInt % 4) + 1, (98 + turn).toChar)
         nextPlayer
       }
       
