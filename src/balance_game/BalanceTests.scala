@@ -52,7 +52,6 @@ class BalanceTests {
    assertEquals(1, game.allScales.size)
    assertEquals(-1, game.allScales(0).totalMoment)
    
-   game.addScale('a', 2, "right", 2, 'x')
    
    assertEquals(2, game.allScales.size)
    assertEquals(-1, game.allScales(0).totalMoment)
@@ -128,12 +127,27 @@ class BalanceTests {
   
   @Test def TestNewScale = {
    val game = new Game(new Player("Tervo", 'T'), new Player("Sami", 'S'))  
-   game.allScales += new Scale('a', 4) //A scale at the beginning of the game.
+   //game.allScales += new Scale('a', 4) //A scale at the beginning of the game.
    
    game.addWeight('a', 2, "right") //Tervo puts a weight
    assertEquals(1,game.allScales.size)
-   game.addWeight('a', 1, "left") //Sami puts a weight. A new Scale should appear.
+   game.addWeight('a', 2, "left") //Sami puts a weight. A new Scale should appear.
    assertEquals(2, game.allScales.size)
+   assertEquals(2, game.allPlayers(0).points)
+   assertEquals(2, game.allPlayers(1).points)
+   
+   game.addWeight('d', 3, "right")   //Tervo puts a weight
+   assertEquals(4, game.allPlayers(0).points)
+   
+   game.addWeight('d', 2, "left") //Sami puts a weight
+   assertEquals(4, game.allPlayers(0).points) //Tervo's points
+   game.addWeight('d', 3, "right") //Tervo puts a weight and the scale becomes unbalanced. Nothing should change
+   assertEquals(4, game.allPlayers(0).points)
+   assertEquals(4, game.allPlayers(1).points)
+   game.addWeight('a', 2, "right") //Sami puts his weight on Tervo's weight and thus making them both Sami's. But he also puts it "under" a scale....
+   
+   assertEquals(2, game.allPlayers(0).points)
+   assertEquals(8, game.allPlayers(1).points)
   }
   
 }
