@@ -4,22 +4,34 @@ import scala.collection.mutable.Buffer
 import scala.swing._
 import scala.swing.event._
 import balance_game._
+import javax.swing.JOptionPane
+import java.awt.image.BufferedImage
+import javax.imageio.ImageIO
+import java.io.File
+import java.awt.image.BufferedImage
+import java.awt.{Graphics2D, Color}
+
 
 object BalanceGameGUI extends SimpleSwingApplication {
   
-  val game = new Game(new Player("Sami", 'S'), new Player("Tervo", 'T'))
+  val firstPlayer  = JOptionPane.showInputDialog("Player 1", "").trim.filter(_ != ' ').split(",")
+  val secondPlayer = JOptionPane.showInputDialog("Player 2", "").trim.filter(_ != ' ').split(",")
   
+  
+  val game = new Game(new Player(firstPlayer(0), firstPlayer(1)(0)), new Player(secondPlayer(0), secondPlayer(1)(0)) )
   
   def top = new MainFrame{
     title = "Balance Game"
     
+    
     def updateInfo = { //Helper function to update all the info like player points, weights left (to be implemented)
       var i = 0
       for(component <- gameInfo.contents) {
-        component.asInstanceOf[Label].text = game.allPlayers(i).name + " " + game.allPlayers(i).points
+        component.asInstanceOf[Label].text = game.allPlayers(i).name + " " + game.allPlayers(i).emblem + " " + game.allPlayers(i).points
         i += 1
       }
     }
+    
     
     
     //Buttons, ComboBoxes etc...
@@ -34,18 +46,28 @@ object BalanceGameGUI extends SimpleSwingApplication {
       case button: ButtonClicked => 
         val whichScale    = scaleChoices.item(0) //Here we take the name of the Scale.
         val whichSide     = sideChoices.item
-        val whichDistance = distanceChoices.item
-        game.addWeight(whichScale, whichDistance, whichSide)
-        scaleChoices.peer.setModel( ComboBox.newConstantModel(game.allScales.map(_.name.toString)) )
-        updateInfo
+        val whichDistance = distanceChoices.item //The player cannot put a weight "under" a scale cause that doesn't make sense.
+        val scaleChecking = if(whichSide == "right"){
+          game.allScales.find(_.name == whichScale).get.rightArm
+        } else {
+          game.allScales.find(_.name == whichScale).get.leftArm
+        }
         
+        scaleChecking(whichDistance - 1).objects.find(_.toString == "I am a scale!") match{
+          case Some(scale) => 
+            Dialog.showMessage(top, "You cannot put a weight under a scale", "Error")
         
+          case None => game.addWeight(whichScale, whichDistance, whichSide)
+            scaleChoices.peer.setModel( ComboBox.newConstantModel(game.allScales.map(_.name.toString)) )
+            updateInfo      
+        }
         
       case scaleChanged: FocusLost          => //We change the distances in when choosing a scale. This way, we don't have to check, wether the player gave incorrect inputs.
         distanceChoices.peer.setModel(ComboBox.newConstantModel(List.tabulate(game.allScales.find(_.name == scaleChoices.item(0)).get.distance)(x => x + 1)))
         
      // case e => println(e) For testing to see the reactions.
     }
+    
     
     val choiceBoxes = new BoxPanel(Orientation.Horizontal){
       contents += scaleChoices
@@ -57,23 +79,23 @@ object BalanceGameGUI extends SimpleSwingApplication {
     
     val gameInfo = new BoxPanel(Orientation. Vertical) {
       for(player <- game.allPlayers){
-        contents += new Label(player.name + " " + player.points)
+        contents += new Label(player.name + " " + player.emblem + " " +  player.points)
       }
     }
     
     
     val bottomComponents = new BorderPanel {
       layout += choiceBoxes -> BorderPanel.Position.East
-      layout += gameInfo -> BorderPanel.Position.Center    //Center on West don't make a difference for some reason.
+      layout += gameInfo -> BorderPanel.Position.West    //Center or West don't make a difference for some reason.
     }
     
     val bottom = new BorderPanel {
       layout += bottomComponents -> BorderPanel.Position.South
+      layout += new ScaleModel(1600/2 - 50, 735) -> BorderPanel.Position.Center
       maximumSize = new Dimension(5,5)
     }
       
     contents = bottom
-    size = new Dimension(1500, 800)
+    size = new Dimension(1600, 840)
   }
-  
 }

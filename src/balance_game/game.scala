@@ -102,7 +102,7 @@ class Game(player1: Player, player2: Player) {
         allPlayers.foreach(_.points = 0)
         playerPoints(allScales(0), 1, true)
         if(turn % allPlayers.size == 0) {
-          addScale( whichScale.name, where, sides(randomScale.nextInt % 2), (randomScale.nextInt.abs.toInt % 4) + 1, (98 + turn).toChar)
+          addScale( whichScale.name, where, sides(randomScale.nextInt.abs % 2), (randomScale.nextInt.abs.toInt % 4) + 1, (97 + allScales.size).toChar)
           for(scale <- allScales) { //This is just for pure testing. Trying to find, where the new scale is put.
             println(scale.name)
             println("left")
