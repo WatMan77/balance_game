@@ -33,7 +33,7 @@ class Game(player1: Player, player2: Player) {
       }
       
       if(isLowest) howFar += 1 //When we are in a different Scale, the multiplayer is constant.
-      if(howFar > startingPoint.distance && isLowest) howFar = 1
+      if(howFar > startingPoint.distance && isLowest) howFar = 1 //Now when we "change" the arm, howFar becomes 1 again.
     }
   }
   

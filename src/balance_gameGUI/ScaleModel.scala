@@ -10,26 +10,26 @@ import java.io.File
 import java.awt.image.BufferedImage
 import java.awt.{Graphics2D, Color}
 
-class ScaleModel(startingx: Int, startingy: Int) extends Panel{
+class ScaleModel(startingx: Int, startingy: Int, distance: Int){
   
-  override def paintComponent(g: Graphics2D) = {
-    val distance = 3
+   def paint(g: Graphics2D) = {
     
-    g.setColor(Color.white)
-    g.fillRect(0, 10, 1600, 750)
+    //g.setColor(Color.white)
+    //g.fillRect(0, 10, 1600, 750)
     
     g.setColor(Color.black)
     for(time <- 0 to 1) {
       g.setColor(Color.black)
       g.fillRect(startingx, startingy - (32 * time) , 25, 25)
-      for(time1 <- 0 to 2) {//Maybe there should be only one line in the middle?
+      for(time1 <- 0 to 2) {    //Maybe there should be only one line in the middle?
         g.setColor(Color.black)
+        //Draw some lines to make the scale look prettier.
       g.drawLine(startingx + 25/2 * time1, startingy, startingx + 25/2 * time1, startingy - 32)
       }
       
       for(place <- (-1)*distance to distance) {
         if(place != 0) {
-          g.drawString(place.abs.toString, startingx + 35*place + 9, startingy - 32/2 )
+          g.drawString(place.abs.toString, startingx + 35*place + 9, startingy - 16 )
           g.setColor(Color.black)
           g.drawRect(startingx + 35*place, startingy - 32, 25, 25)
         } else {

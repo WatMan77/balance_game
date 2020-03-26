@@ -33,7 +33,6 @@ object BalanceGameGUI extends SimpleSwingApplication {
     }
     
     
-    
     //Buttons, ComboBoxes etc...
     val weightButton    = new Button("Add")
     var sideChoices     = new ComboBox(List("left", "right")){maximumSize = new Dimension(50, 25)}
@@ -60,6 +59,7 @@ object BalanceGameGUI extends SimpleSwingApplication {
           case None => game.addWeight(whichScale, whichDistance, whichSide)
             scaleChoices.peer.setModel( ComboBox.newConstantModel(game.allScales.map(_.name.toString)) )
             updateInfo      
+            repaint()
         }
         
       case scaleChanged: FocusLost          => //We change the distances in when choosing a scale. This way, we don't have to check, wether the player gave incorrect inputs.
@@ -91,7 +91,8 @@ object BalanceGameGUI extends SimpleSwingApplication {
     
     val bottom = new BorderPanel {
       layout += bottomComponents -> BorderPanel.Position.South
-      layout += new ScaleModel(1600/2 - 50, 735) -> BorderPanel.Position.Center
+      layout += new canvas -> BorderPanel.Position.Center
+      //layout += new ScaleModel(1600/2 - 50, 735) -> BorderPanel.Position.Center
       maximumSize = new Dimension(5,5)
     }
       
