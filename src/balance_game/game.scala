@@ -5,18 +5,49 @@ import scala.util.Random
 
 class Game(player1: Player, player2: Player) {
   
-  var allScales = Buffer(new Scale('a', 4))   //It will be easier to find the scale we need when putting on weights. Also a starting scale. Might change later to be random...
+  var allScales = Buffer(new Scale('a', 5))   //It will be easier to find the scale we need when putting on weights. Also a starting scale. Might change later to be random...
   val allWeights = Buffer[Weight]()
+  var weightsLeft = 2
   val allPlayers = Vector(player1, player2) //This might be wrong since we need the players from the very beginning.
   var currentPlayer = allPlayers(0) //Player one always starts the game
   var totalPoints = 0
   var turn = 1
-  private val randomScale = new Random(568)
+  private val randomScale = new Random(30) //568
   private val sides = Array("left", "right")
   
   def nextPlayer: Unit = {
     currentPlayer = allPlayers((allPlayers.indexOf(currentPlayer) + 1) % 2)
     turn += 1
+  }
+  
+  /*
+   * This method is used to check, wether the place we are trying to put a scale on
+   * doesn't already have a scale. It messes up the GUI.
+   * We can also use it to see, wether it is a good idea to put a scale on it. For example,
+   * putting two scales on two places next to each messes up the GUI as well, because scales will overlap each other.
+   * Unfortunately it also limits where a scale can be put.
+   */
+  def checkPlace(scaleCheck: Scale, distanceCheck: Int, checkSide: String): Boolean = {
+   val whichOne = if(checkSide == "right") scaleCheck.rightArm else scaleCheck.leftArm
+   var result = true
+   for(mass <- whichOne(distanceCheck - 1).objects){
+     if(mass.isInstanceOf[Scale]) result = false
+   }
+   var both = (scaleCheck.leftArm ++ scaleCheck.rightArm)
+   var i = -1
+  /* for(place <- both){
+     for(item <- place.objects){
+       if(item.isInstanceOf[Scale]){
+         if(i < 0 && checkSide == "left"){
+           if(item.asInstanceOf[Scale].distance)
+         }
+         
+       }
+     }
+     if(i < 0) i -= 1 else i += 1
+     if(i.abs > scaleCheck.distance) i = 1
+   }*/
+   result
   }
   
   def playerPoints(startingPoint: Scale, aDistance: Int, isLowest: Boolean) {
@@ -37,14 +68,14 @@ class Game(player1: Player, player2: Player) {
     }
   }
   
- private def addScale(scaleName: Char, distance: Int, side: String, newRadius: Int, name: Char ) = {
+  def addScale(scaleName: Char, distance: Int, side: String, newRadius: Int, name: Char ) = {
     allScales.find(n => n.name == scaleName) match {
       
       case Some(scale) => { //Scale might've been found but do other parameters match with the scale?
-        
+        //println("LISÄTTIIN")
         if(distance > scale.distance || distance <= 0) {
+          println("INVALID")
           "Invalid distance. Try again" 
-          
         } else {
           val item =  new Scale(name, newRadius)
           allScales += item
@@ -82,11 +113,13 @@ class Game(player1: Player, player2: Player) {
           val item = new Weight(currentPlayer)
           allWeights += item
           thePlace += item
+          weightsLeft -= 1
           
           if(allScales.forall(!_.isImbalanced) == false) {
             foundImbalance = true
             thePlace -= item
             allWeights -= item
+            weightsLeft += 1
           }
         }
         
@@ -96,13 +129,27 @@ class Game(player1: Player, player2: Player) {
          weightsBeneath.foreach(_.owner = currentPlayer)
         }
         
-        val whichScale = allScales(randomScale.nextInt.abs.toInt % allScales.size) // We need the scale on which we put another scale first so we know its radius.
-        val where = (randomScale.nextInt() % whichScale.distance).abs.toInt + 1 //Which place we put the scale on. 0 is not acceptable       
+        var whichScale = allScales(randomScale.nextInt.abs.toInt % allScales.size) // We need the scale on which we put another scale first so we know its radius.
+        var where = (randomScale.nextInt() % whichScale.distance).abs.toInt + 1 //Which place we put the scale on. 0 is not acceptable 
+        var counter = 0
+        var randomSide = sides(randomScale.nextInt.abs % 2)
+        /*
+         * Go through the loop until we find a suitable place for a scale. Could be that there is no suitable place
+         * and then we just don't put a scale
+         */
+        while(!this.checkPlace(whichScale, where, randomSide) && (counter < 50001)){
+          whichScale = allScales(randomScale.nextInt.abs.toInt % allScales.size)
+          where = (randomScale.nextInt() % whichScale.distance).abs.toInt + 1
+          randomSide = sides(randomScale.nextInt.abs % 2)
+          counter += 1
+        }
         
         allPlayers.foreach(_.points = 0)
         playerPoints(allScales(0), 1, true)
-        if(turn % allPlayers.size == 0) {
-          addScale( whichScale.name, where, sides(randomScale.nextInt.abs % 2), (randomScale.nextInt.abs.toInt % 4) + 1, (97 + allScales.size).toChar)
+        println(counter + "LAKSURIII! " + (turn%allPlayers.size) )
+        if(turn % allPlayers.size == 0 && counter <= 50000) {
+          addScale( whichScale.name, where, randomSide, (randomScale.nextInt.abs.toInt % 3) + 1, (97 + allScales.size).toChar)
+          
           for(scale <- allScales) { //This is just for pure testing. Trying to find, where the new scale is put.
             println(scale.name)
             println("left")
@@ -111,6 +158,7 @@ class Game(player1: Player, player2: Player) {
             scale.rightArm.foreach(n => println(n.objects))
           }
         }
+        println(allScales.size + " ÖÖÖÖ\n")
         nextPlayer
       }
       

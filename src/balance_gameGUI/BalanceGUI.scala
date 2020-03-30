@@ -30,8 +30,26 @@ object BalanceGameGUI extends SimpleSwingApplication {
         component.asInstanceOf[Label].text = game.allPlayers(i).name + " " + game.allPlayers(i).emblem + " " + game.allPlayers(i).points
         i += 1
       }
+      for(component <- middleComponent.contents) {
+        component.asInstanceOf[Label].text = "      Weights Left: " + game.weightsLeft.toString
+      }
     }
     
+    def announceWinners = {
+      //Sort the points and reverse it so the person with most points is first.
+      val sortedPoints = game.allPlayers.sortBy(_.points).reverse
+      val winners = sortedPoints.takeWhile(_.points == sortedPoints(0).points)
+      if(winners.size == 1){
+        Dialog.showMessage(top, "The winner is " + winners(0).name + " with " + winners(0).points + " points!", "Game over!")
+      } else {
+        var message = ""
+        for(person <- winners){
+          message += person.name + " with " + person.points + " points, "
+        }
+        //The dropping is done to get rid of the ',' and replace it with a dot '.'.
+        Dialog.showMessage(top, "We have a tie! The winners are: " + message.dropRight(2) + '.', "Game Over!")
+      }
+    }
     
     //Buttons, ComboBoxes etc...
     val weightButton    = new Button("Add")
@@ -43,6 +61,9 @@ object BalanceGameGUI extends SimpleSwingApplication {
     listenTo(scaleChoices)
     this.reactions += {
       case button: ButtonClicked => 
+        if(game.weightsLeft <= 0){
+          announceWinners
+        } else {
         val whichScale    = scaleChoices.item(0) //Here we take the name of the Scale.
         val whichSide     = sideChoices.item
         val whichDistance = distanceChoices.item //The player cannot put a weight "under" a scale cause that doesn't make sense.
@@ -60,7 +81,9 @@ object BalanceGameGUI extends SimpleSwingApplication {
             scaleChoices.peer.setModel( ComboBox.newConstantModel(game.allScales.map(_.name.toString)) )
             updateInfo      
             repaint()
+            if(game.weightsLeft <= 0) announceWinners
         }
+       }
         
       case scaleChanged: FocusLost          => //We change the distances in when choosing a scale. This way, we don't have to check, wether the player gave incorrect inputs.
         distanceChoices.peer.setModel(ComboBox.newConstantModel(List.tabulate(game.allScales.find(_.name == scaleChoices.item(0)).get.distance)(x => x + 1)))
@@ -83,10 +106,14 @@ object BalanceGameGUI extends SimpleSwingApplication {
       }
     }
     
+    val middleComponent = new BoxPanel(Orientation.Vertical){
+      contents += new Label("      Weights Left: " + game.weightsLeft.toString)
+    }
     
     val bottomComponents = new BorderPanel {
       layout += choiceBoxes -> BorderPanel.Position.East
       layout += gameInfo -> BorderPanel.Position.West    //Center or West don't make a difference for some reason.
+      layout += middleComponent -> BorderPanel.Position.Center
     }
     
     val bottom = new BorderPanel {

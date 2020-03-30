@@ -2,7 +2,7 @@ package balance_game
 
 import scala.collection.mutable.Buffer
 
-class Scale(emblem: Char, radius: Int) extends Mass {
+class Scale(emblem: Char, val radius: Int) extends Mass {
   
   val name = this.emblem
   val distance = radius
