@@ -14,11 +14,16 @@ import java.awt.{Graphics2D, Color}
 
 object BalanceGameGUI extends SimpleSwingApplication {
   
-  val firstPlayer  = JOptionPane.showInputDialog("Player 1", "").trim.filter(_ != ' ').split(",")
-  val secondPlayer = JOptionPane.showInputDialog("Player 2", "").trim.filter(_ != ' ').split(",")
   
+  val players = Buffer[Player]()
+  val playerAmount = JOptionPane.showInputDialog("How many players?", "").trim.toInt
+  for(times <-1 to playerAmount){
+    println("Hei")
+    val player = JOptionPane.showInputDialog("Player " + times, "").trim.filter(_ != ' ').split(",")
+    players += new Player(player(0), player(1)(0))
+  }
   
-  val game = new Game(new Player(firstPlayer(0), firstPlayer(1)(0)), new Player(secondPlayer(0), secondPlayer(1)(0)) )
+  val game = new Game(players)
   
   def top = new MainFrame{
     title = "Balance Game"
@@ -100,9 +105,9 @@ object BalanceGameGUI extends SimpleSwingApplication {
       minimumSize = new Dimension(100, 100)
     }
     
-    val gameInfo = new BoxPanel(Orientation. Vertical) {
+    val gameInfo = new BoxPanel(Orientation. Horizontal) {
       for(player <- game.allPlayers){
-        contents += new Label(player.name + " " + player.emblem + " " +  player.points)
+        contents += new Label(player.name + " " + player.emblem + " " +  player.points + " ")
       }
     }
     

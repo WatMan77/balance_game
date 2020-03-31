@@ -3,12 +3,12 @@ import scala.collection.mutable.Buffer
 import scala.Vector
 import scala.util.Random
 
-class Game(player1: Player, player2: Player) {
+class Game(players: Buffer[Player]) {
   
   var allScales = Buffer(new Scale('a', 5))   //It will be easier to find the scale we need when putting on weights. Also a starting scale. Might change later to be random...
   val allWeights = Buffer[Weight]()
-  var weightsLeft = 2
-  val allPlayers = Vector(player1, player2) //This might be wrong since we need the players from the very beginning.
+  var weightsLeft = 10
+  val allPlayers = players
   var currentPlayer = allPlayers(0) //Player one always starts the game
   var totalPoints = 0
   var turn = 1
@@ -16,7 +16,7 @@ class Game(player1: Player, player2: Player) {
   private val sides = Array("left", "right")
   
   def nextPlayer: Unit = {
-    currentPlayer = allPlayers((allPlayers.indexOf(currentPlayer) + 1) % 2)
+    currentPlayer = allPlayers((allPlayers.indexOf(currentPlayer) + 1) % allPlayers.size)
     turn += 1
   }
   
@@ -119,7 +119,6 @@ class Game(player1: Player, player2: Player) {
             foundImbalance = true
             thePlace -= item
             allWeights -= item
-            weightsLeft += 1
           }
         }
         
