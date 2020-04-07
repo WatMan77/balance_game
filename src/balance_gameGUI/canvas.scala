@@ -28,6 +28,9 @@ class canvas extends Panel {
     var i = -1
     
     //We draw everything using recursion starting from the lowest scale.
+    //We empty the Coordinates Buffer because it is easier than checking whether it a scale is already in the list.
+    BalanceGameGUI.game.scaleCoordinates = Buffer[(Int, Int, Char, Int)]()
+    BalanceGameGUI.game.scaleCoordinates += ((1600/2 - 50, 735, scales(0).name, scales(0).distance))
     for(place <- scales(0).leftArm ++ scales(0).rightArm){
       var itemsFound = 0
       for(mass <- place.objects){
@@ -64,6 +67,8 @@ class canvas extends Panel {
       }
        val model = new ScaleModel(relativeX, relativeY, scaleInspect.distance, scaleInspect.name)
        model.paint(g)
+       BalanceGameGUI.game.scaleCoordinates += ((relativeX, relativeY, scaleInspect.name, scaleInspect.distance))
+       BalanceGameGUI.game.scaleCoordinates.foreach((new TestCircle(relativeX, relativeY).paint(g))
     }
   }
 }

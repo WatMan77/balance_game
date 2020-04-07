@@ -17,3 +17,6 @@ difficult because I have to know beforehand, where the scales will appear and cr
 I haven't done the project every single day but when I have been doing it, it was around 4 hours or more which was plenty. Overall, this project is taking less time than I thought.
 Right now pretty much there is nothing else than finishing the GUI.
 
+After 4.1 I haven't really done that much. I had a checkpoint meeting with the assistant and turns out my project is almost complete.
+Because of that I tried to focus on other subjects. The amount has been around 2-4 hours after 4.1. Still I intend to implement a 
+coordinates checking system, when adding new scales. Other than that the only parts missing are the documentation and tests.

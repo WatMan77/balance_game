@@ -18,7 +18,6 @@ object BalanceGameGUI extends SimpleSwingApplication {
   val players = Buffer[Player]()
   val playerAmount = JOptionPane.showInputDialog("How many players?", "").trim.toInt
   for(times <-1 to playerAmount){
-    println("Hei")
     val player = JOptionPane.showInputDialog("Player " + times, "").trim.filter(_ != ' ').split(",")
     players += new Player(player(0), player(1)(0))
   }
@@ -93,7 +92,6 @@ object BalanceGameGUI extends SimpleSwingApplication {
       case scaleChanged: FocusLost          => //We change the distances in when choosing a scale. This way, we don't have to check, wether the player gave incorrect inputs.
         distanceChoices.peer.setModel(ComboBox.newConstantModel(List.tabulate(game.allScales.find(_.name == scaleChoices.item(0)).get.distance)(x => x + 1)))
         
-     // case e => println(e) For testing to see the reactions.
     }
     
     
@@ -116,9 +114,9 @@ object BalanceGameGUI extends SimpleSwingApplication {
     }
     
     val bottomComponents = new BorderPanel {
-      layout += choiceBoxes -> BorderPanel.Position.East
-      layout += gameInfo -> BorderPanel.Position.West    //Center or West don't make a difference for some reason.
-      layout += middleComponent -> BorderPanel.Position.Center
+      add(choiceBoxes, BorderPanel.Position.East)
+      add(gameInfo, BorderPanel.Position.West)    //Center or West don't make a difference for some reason.
+      add(middleComponent, BorderPanel.Position.Center)
     }
     
     val bottom = new BorderPanel {
