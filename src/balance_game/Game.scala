@@ -133,6 +133,12 @@ class Game(players: Buffer[Player], weights: Int) {
          weightsBeneath.foreach(_.owner = currentPlayer)
         }
         
+       
+        
+        allPlayers.foreach(_.points = 0)
+        playerPoints(allScales(0), 1, true)
+        if(turn % allPlayers.size == 0) {
+          
         var whichScale = allScales(randomScale.nextInt.abs.toInt % allScales.size) // We need the scale on which we put another scale first so we know its radius.
         var where = (randomScale.nextInt() % whichScale.distance).abs.toInt + 1 //Which place we put the scale on. 0 is not acceptable 
         var counter = 0
@@ -149,12 +155,7 @@ class Game(players: Buffer[Player], weights: Int) {
           newRadius = (randomScale.nextInt.abs.toInt % 3) + 1
           counter += 1
         }
-        
-        allPlayers.foreach(_.points = 0)
-        playerPoints(allScales(0), 1, true)
-        //println(counter + "LAKSURIII! " + (turn%allPlayers.size) )
-        if(turn % allPlayers.size == 0 && counter <= 50000) {
-          addScale( whichScale.name, where, randomSide, newRadius, (97 + allScales.size).toChar)
+         if(counter < 50000) addScale( whichScale.name, where, randomSide, newRadius, (97 + allScales.size).toChar)
           
          /* for(scale <- allScales) { //This is just for pure testing. Trying to find, where the new scale is put.
             println(scale.name)
