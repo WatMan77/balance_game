@@ -68,7 +68,8 @@ class canvas extends Panel {
        val model = new ScaleModel(relativeX, relativeY, scaleInspect.distance, scaleInspect.name)
        model.paint(g)
        BalanceGameGUI.game.scaleCoordinates += ((relativeX, relativeY, scaleInspect.name, scaleInspect.distance))
-       BalanceGameGUI.game.scaleCoordinates.foreach((new TestCircle(relativeX, relativeY).paint(g))
+       //BalanceGameGUI.game.scaleCoordinates.foreach(scale => (new TestCircle(scale._1, scale._2).paint(g)))
+      // BalanceGameGUI.game.scaleCoordinates.foreach(x => println(x))
     }
   }
 }

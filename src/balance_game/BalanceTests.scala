@@ -127,7 +127,7 @@ class BalanceTests {
   
   @Test def TestNewScale = {
     val players = Buffer(new Player("Tervo", 'T'), new Player("Sami", 'S'))
-   val game = new Game(players)  
+   val game = new Game(players, 20)  
    //game.allScales += new Scale('a', 4) //A scale at the beginning of the game.
    
    game.addWeight('a', 2, "right") //Tervo puts a weight

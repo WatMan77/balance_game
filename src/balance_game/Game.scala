@@ -3,17 +3,17 @@ import scala.collection.mutable.Buffer
 import scala.Vector
 import scala.util.Random
 
-class Game(players: Buffer[Player]) {
+class Game(players: Buffer[Player], weights: Int) {
   
   var allScales = Buffer(new Scale('a', 5))   //It will be easier to find the scale we need when putting on weights. Also a starting scale. Might change later to be random...
   var scaleCoordinates = Buffer[(Int, Int, Char, Int)]()
   val allWeights = Buffer[Weight]()
-  var weightsLeft = 50
+  var weightsLeft = weights
   val allPlayers = players
   var currentPlayer = allPlayers(0) //Player one always starts the game
   var totalPoints = 0
   var turn = 1
-  private val randomScale = new Random(30) //568
+  private val randomScale = new Random(568) //568
   private val sides = Array("left", "right")
   
   def nextPlayer: Unit = {
@@ -27,32 +27,31 @@ class Game(players: Buffer[Player]) {
    * We can also use it to see, wether it is a good idea to put a scale on it. For example,
    * putting two scales on two places next to each messes up the GUI as well, because scales will overlap each other.
    * Unfortunately it also limits where a scale can be put.
+   * A scale that has y-coordinate of 104 or lower (calculating from it's bottom rectangle) cannot be <= 104
+   * if we want to put a scale on it.
    */
   def checkPlace(scaleCheck: Scale, distanceCheck: Int, checkSide: String, newRadius: Int): Boolean = {
-    //"whichOne" tells us on which side we want to put the scale
-   val whichOne = if(checkSide == "right") scaleCheck.rightArm else scaleCheck.leftArm
-   var result = true
-   //First check if there are scales on the same side
-   for(place <- whichOne){
-     for(mass <- place.objects){
-       if(mass.isInstanceOf[Scale]){
-         val foundScale = mass.asInstanceOf[Scale]
-         if((foundScale.radius + newRadius) >= (place.distance - distanceCheck).abs){
-           result = false
-         }
-       }
-     }    
-   }
-   val otherSide = if(checkSide == "right") scaleCheck.leftArm else scaleCheck.rightArm
-   for(place <- otherSide){
-     for(mass <- place.objects){
-       if(mass.isInstanceOf[Scale]){
-         val foundScale = mass.asInstanceOf[Scale]
-         if((foundScale.radius + newRadius) >= (place.distance + distanceCheck)) result = false
+    //We need the coordinates of the scale we want to put the new scale on.
+   val inspectiveScale = scaleCoordinates.find(_._3 == scaleCheck.name).get
+     if(inspectiveScale._2 <= 104){
+       println("false Y")
+       return false
+     }
+    //We have to find the scales that are around on the same level as the one we want to put.
+    //From there we check if two scales would intertwine 
+   val sameLevelScales = scaleCoordinates.filter(scale => scale._2 <= inspectiveScale._2 - 70 && scale._2 >= inspectiveScale._2 - 90 - 3*12 )
+   val i = if(checkSide == "right") 1 else -1
+   if(!sameLevelScales.isEmpty){
+     for(scale <- sameLevelScales) {
+       //If the sum of the sides (one from each scale) is greater than the distance between the points,
+       //the scale cannot be put.
+       if((scale._4*35 + newRadius*35).abs >= (scale._1 - (inspectiveScale._1 + i*distanceCheck*35)).abs){
+         println("false distances")
+         return false
        }
      }
    }
-   result
+   true 
   }
   
   def playerPoints(startingPoint: Scale, aDistance: Int, isLowest: Boolean) {

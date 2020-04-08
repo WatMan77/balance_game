@@ -7,9 +7,13 @@ import java.io.File
 import java.awt.image.BufferedImage
 import java.awt.{Graphics2D, Color}
 
+/*
+ * This whole class was made to find out the coordinates of the scales. It has no other purpose.
+ */
 class TestCircle(x: Int, y: Int) {
   
   def paint(g: Graphics2D) = {
+    g.setColor(Color.BLUE)
     g.fillRoundRect(x, y, 10, 10, 10, 10)
   }
   

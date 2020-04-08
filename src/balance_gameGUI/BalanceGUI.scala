@@ -21,8 +21,9 @@ object BalanceGameGUI extends SimpleSwingApplication {
     val player = JOptionPane.showInputDialog("Player " + times, "").trim.filter(_ != ' ').split(",")
     players += new Player(player(0), player(1)(0))
   }
+  val weights = JOptionPane.showInputDialog("How many Weights?", "").trim.toInt
   
-  val game = new Game(players)
+  val game = new Game(players, weights)
   
   def top = new MainFrame{
     title = "Balance Game"
@@ -31,12 +32,12 @@ object BalanceGameGUI extends SimpleSwingApplication {
     def updateInfo = { //Helper function to update all the info like player points, weights left (to be implemented)
       var i = 0
       for(component <- gameInfo.contents) {
-        component.asInstanceOf[Label].text = game.allPlayers(i).name + " " + game.allPlayers(i).emblem + " " + game.allPlayers(i).points
+        component.asInstanceOf[Label].text = game.allPlayers(i).name + " " + game.allPlayers(i).emblem + " " + game.allPlayers(i).points + " "
         i += 1
       }
-      for(component <- middleComponent.contents) {
-        component.asInstanceOf[Label].text = "      Weights Left: " + game.weightsLeft.toString
-      }
+        middleComponent.contents(0).asInstanceOf[Label].text = "      Weights Left: " + game.weightsLeft.toString
+        middleComponent.contents(1).asInstanceOf[Label].text = "    Current Player: " + game.currentPlayer.name
+      
     }
     
     def announceWinners = {
@@ -89,7 +90,7 @@ object BalanceGameGUI extends SimpleSwingApplication {
         }
        }
         
-      case scaleChanged: FocusLost          => //We change the distances in when choosing a scale. This way, we don't have to check, wether the player gave incorrect inputs.
+      case scaleChanged: FocusLost   => //We change the distances in the combobox when choosing a scale. This way, we don't have to check, wether the player gave incorrect inputs.
         distanceChoices.peer.setModel(ComboBox.newConstantModel(List.tabulate(game.allScales.find(_.name == scaleChoices.item(0)).get.distance)(x => x + 1)))
         
     }
@@ -109,8 +110,11 @@ object BalanceGameGUI extends SimpleSwingApplication {
       }
     }
     
-    val middleComponent = new BoxPanel(Orientation.Vertical){
+    //For some reason putting a component in the Center positions the labels next to the west component.
+    //That's why there are spaces to separate 
+    val middleComponent = new BoxPanel(Orientation.Horizontal){
       contents += new Label("      Weights Left: " + game.weightsLeft.toString)
+      contents += new Label("    Current Player: " + game.currentPlayer.name)
     }
     
     val bottomComponents = new BorderPanel {
