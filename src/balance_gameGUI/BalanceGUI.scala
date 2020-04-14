@@ -129,7 +129,7 @@ object BalanceGameGUI extends SimpleSwingApplication {
       //layout += new ScaleModel(1600/2 - 50, 735) -> BorderPanel.Position.Center
       maximumSize = new Dimension(5,5)
     }
-    println(game.scaleCoordinates) 
+    //println(game.scaleCoordinates) 
     contents = bottom
     size = new Dimension(1600, 840)
   }

@@ -13,7 +13,7 @@ class Game(players: Buffer[Player], weights: Int) {
   var currentPlayer = allPlayers(0) //Player one always starts the game
   var totalPoints = 0
   var turn = 1
-  private val randomScale = new Random(568) //568
+  private val randomScale = new Random(56) //568
   private val sides = Array("left", "right")
   
   def nextPlayer: Unit = {
@@ -30,9 +30,9 @@ class Game(players: Buffer[Player], weights: Int) {
    * A scale that has y-coordinate of 104 or lower (calculating from it's bottom rectangle) cannot be <= 104
    * if we want to put a scale on it.
    */
-  def checkPlace(scaleCheck: Scale, distanceCheck: Int, checkSide: String, newRadius: Int): Boolean = {
+  def checkPlace(scaleCheck: Scale, distanceCheck: Int, checkSide: String, newRadius: Int): Boolean = {    
     //We need the coordinates of the scale we want to put the new scale on.
-   val inspectiveScale = scaleCoordinates.find(_._3 == scaleCheck.name).get
+   val inspectiveScale = scaleCoordinates.find(_._3 == scaleCheck.name).getOrElse(return true)
      if(inspectiveScale._2 <= 104){
        println("false Y")
        return false
@@ -54,21 +54,20 @@ class Game(players: Buffer[Player], weights: Int) {
    true 
   }
   
-  def playerPoints(startingPoint: Scale, aDistance: Int, isLowest: Boolean) {
-    var howFar = aDistance
+  def playerPoints(startingPoint: Scale, multiplier: Int) {
+    var howFar = 1
     
     for(place <- startingPoint.leftArm ++ startingPoint.rightArm) {
       for(item <- place.objects) {
         
         if(item.toString == "I am a weight!"){
-          item.asInstanceOf[Weight].owner.points += 1*howFar //1 is useless but helps understand, what is actualy going on.
+          item.asInstanceOf[Weight].owner.points += multiplier*howFar //1 is useless but helps understand, what is actualy going on.
         } else {
-          playerPoints(item.asInstanceOf[Scale], howFar, false) 
+          playerPoints(item.asInstanceOf[Scale], howFar*multiplier) 
         }
       }
-      
-      if(isLowest) howFar += 1 //When we are in a different Scale, the multiplayer is constant.
-      if(howFar > startingPoint.distance && isLowest) howFar = 1 //Now when we "change" the arm, howFar becomes 1 again.
+      howFar += 1
+      if(howFar > startingPoint.distance) howFar = 1 //Now when we "change" the arm, howFar becomes 1 again.
     }
   }
   
@@ -90,7 +89,7 @@ class Game(players: Buffer[Player], weights: Int) {
           }
         }
         allPlayers.foreach(_.points = 0)
-        playerPoints(allScales(0), 1, true)
+        playerPoints(allScales(0), 1)
       }
       //This should never happen since we give the players a list of scales.
       //Should a bug happen, the game at least won't crash.
@@ -136,7 +135,7 @@ class Game(players: Buffer[Player], weights: Int) {
        
         
         allPlayers.foreach(_.points = 0)
-        playerPoints(allScales(0), 1, true)
+        playerPoints(allScales(0), 1)
         if(turn % allPlayers.size == 0) {
           
         var whichScale = allScales(randomScale.nextInt.abs.toInt % allScales.size) // We need the scale on which we put another scale first so we know its radius.
@@ -157,7 +156,7 @@ class Game(players: Buffer[Player], weights: Int) {
         }
          if(counter < 50000) addScale( whichScale.name, where, randomSide, newRadius, (97 + allScales.size).toChar)
           
-         /* for(scale <- allScales) { //This is just for pure testing. Trying to find, where the new scale is put.
+          /*for(scale <- allScales) { //This is just for pure testing. Trying to find, where the new scale is put.
             println(scale.name)
             println("left")
             scale.leftArm.foreach(n => println(n.objects))
@@ -166,7 +165,7 @@ class Game(players: Buffer[Player], weights: Int) {
           }*/
 
         }
-        println(allScales.size + " size\n")
+       // println(allScales.size + " size\n")
         nextPlayer
       }
       

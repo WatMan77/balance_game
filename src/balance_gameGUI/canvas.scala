@@ -16,7 +16,6 @@ class canvas extends Panel {
   //From which point do we draw the scale? What is the radius of the new scale?
   //We can try going from the very first scale (meaning we draw the first scale separately)
 
-  println("I've been drawn!")
   override def paintComponent(g: Graphics2D) = {
     val scales = BalanceGameGUI.game.allScales
     val scaleModels = Buffer[ScaleModel]()
