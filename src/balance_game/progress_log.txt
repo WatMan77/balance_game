@@ -5,10 +5,10 @@ I also made mistakes when planning this project and so some methods were made ag
 they are old and do not predict the real outcome we want. That is again because of me not reading fully the instructions. But classes Weight, Mass, Place and Scale work in the 
 intended way, minus one method in Scale.
 
-Most of the things I did were done in the first week betewwn 24.2 - 1.3 and I used around 3 hours a day. The second week didn't go as planned because of hurry,
+Most of the things I did were done in the first week between 24.2 - 1.3 and I used around 3 hours a day. The second week didn't go as planned because of hurry,
 but luckily that didn't really affect my schedule. I hope to finish the point counting before weekend so I can start working on the GUI as I believe it will be the most difficult part.
 
-24.4
+24.3
 
 Added the basics of the GUI. There are buttons and Comboboxes using which the player chooses the place they want to put a weight on. Thanks to the GUI, I no longer need to check,
 wether the player puts a weight on a spot that exists but what I had to check is wether the player is putting a weight "under" a scale, which wasn't a problem. 
@@ -16,6 +16,8 @@ Some problems I have encountered: What should the scale look like? Is it smart t
 difficult because I have to know beforehand, where the scales will appear and creating more restrictions will make the previous test unusable.
 I haven't done the project every single day but when I have been doing it, it was around 4 hours or more which was plenty. Overall, this project is taking less time than I thought.
 Right now pretty much there is nothing else than finishing the GUI.
+
+7.4
 
 After 4.1 I haven't really done that much. I had a checkpoint meeting with the assistant and turns out my project is almost complete.
 Because of that I tried to focus on other subjects. The amount has been around 2-4 hours after 4.1. Still I intend to implement a 

@@ -8,7 +8,8 @@ import java.awt.image.BufferedImage
 import java.awt.{Graphics2D, Color}
 
 /*
- * This whole class was made to find out the coordinates of the scales. It has no other purpose.
+ * This whole class was made to find out the coordinates of the scales. It has no other purpose
+ * and is not really used in the program.
  */
 class TestCircle(x: Int, y: Int) {
   

@@ -11,7 +11,7 @@ import java.io.File
 import java.awt.image.BufferedImage
 import java.awt.{Graphics2D, Color}
 
-class canvas extends Panel {
+class Canvas extends Panel {
   
   //From which point do we draw the scale? What is the radius of the new scale?
   //We can try going from the very first scale (meaning we draw the first scale separately)

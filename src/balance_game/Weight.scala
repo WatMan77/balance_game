@@ -5,7 +5,7 @@ class Weight(var owner: Player) extends Mass {
   //Owner of the weight can change
   private val _weight = 1
   def weight = this._weight
-  def changeOwner(player: Player) = {
+  def changeOwner(player: Player): Unit = {
     owner = player
   }
   

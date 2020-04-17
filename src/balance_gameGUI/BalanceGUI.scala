@@ -18,8 +18,15 @@ object BalanceGameGUI extends SimpleSwingApplication {
   val players = Buffer[Player]()
   val playerAmount = JOptionPane.showInputDialog("How many players?", "").trim.toInt
   for(times <-1 to playerAmount){
-    val player = JOptionPane.showInputDialog("Player " + times, "").trim.filter(_ != ' ').split(",")
-    players += new Player(player(0), player(1)(0))
+    //Let's make sure the player enters the name in a correct format.
+    var correctFormat = false
+      while(!correctFormat){
+      val player = JOptionPane.showInputDialog("Player " + times, "").trim.filter(_ != ' ').split(",")
+        if(player.size == 2){
+          players += new Player(player(0), player(1)(0))
+          correctFormat = true
+        }
+    }
   }
   val weights = JOptionPane.showInputDialog("How many Weights?", "").trim.toInt
   
@@ -29,7 +36,7 @@ object BalanceGameGUI extends SimpleSwingApplication {
     title = "Balance Game"
     
     
-    def updateInfo = { //Helper function to update all the info like player points, weights left (to be implemented)
+   private def updateInfo = { //Helper function to update all the info like player points, weights left (to be implemented)
       var i = 0
       for(component <- gameInfo.contents) {
         component.asInstanceOf[Label].text = game.allPlayers(i).name + " " + game.allPlayers(i).emblem + " " + game.allPlayers(i).points + " "
@@ -40,7 +47,7 @@ object BalanceGameGUI extends SimpleSwingApplication {
       
     }
     
-    def announceWinners = {
+   private def announceWinners = {
       //Sort the points and reverse it so the person with most points is first.
       val sortedPoints = game.allPlayers.sortBy(_.points).reverse
       val winners = sortedPoints.takeWhile(_.points == sortedPoints(0).points)
@@ -112,20 +119,20 @@ object BalanceGameGUI extends SimpleSwingApplication {
     
     //For some reason putting a component in the Center positions the labels next to the west component.
     //That's why there are spaces to separate 
-    val middleComponent = new BoxPanel(Orientation.Horizontal){
+   private val middleComponent = new BoxPanel(Orientation.Horizontal){
       contents += new Label("      Weights Left: " + game.weightsLeft.toString)
       contents += new Label("    Current Player: " + game.currentPlayer.name)
     }
     
-    val bottomComponents = new BorderPanel {
+   private val bottomComponents = new BorderPanel {
       add(choiceBoxes, BorderPanel.Position.East)
       add(gameInfo, BorderPanel.Position.West)    //Center or West don't make a difference for some reason.
       add(middleComponent, BorderPanel.Position.Center)
     }
     
-    val bottom = new BorderPanel {
+   private val bottom = new BorderPanel {
       layout += bottomComponents -> BorderPanel.Position.South
-      layout += new canvas -> BorderPanel.Position.Center
+      layout += new Canvas -> BorderPanel.Position.Center
       //layout += new ScaleModel(1600/2 - 50, 735) -> BorderPanel.Position.Center
       maximumSize = new Dimension(5,5)
     }

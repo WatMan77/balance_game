@@ -49,10 +49,8 @@ class BalanceTests {
     game.addScale('c', 3, "right", 1, 'd')
     game.addWeight('d', 1, "right")
     game.addWeight('c', 1, "left")
-    assertEquals(2, game.allPlayers(0).points)
+    assertEquals(6, game.allPlayers(0).points)
     assertEquals(2, game.allPlayers(1).points)
-    //Even though the players put their weights on different scales,
-    //they both get 2 points because the scales they put the weights on are both on a,2,right
     
     //Now we check whether the TotalMoment of each scale is correct
     assertEquals(-4, game.allScales(0).totalMoment) //a

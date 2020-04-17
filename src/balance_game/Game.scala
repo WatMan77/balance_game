@@ -5,16 +5,15 @@ import scala.util.Random
 
 class Game(players: Buffer[Player], weights: Int) {
   
-  var allScales = Buffer(new Scale('a', 5))   //It will be easier to find the scale we need when putting on weights. Also a starting scale. Might change later to be random...
+  val allScales = Buffer(new Scale('a', 5))   //It will be easier to find the scale we need when putting on weights. Also a starting scale. Might change later to be random...
   var scaleCoordinates = Buffer[(Int, Int, Char, Int)]()
   val allWeights = Buffer[Weight]()
   var weightsLeft = weights
   val allPlayers = players
   var currentPlayer = allPlayers(0) //Player one always starts the game
-  var totalPoints = 0
   var turn = 1
-  private val randomScale = new Random(56) //568
-  private val sides = Array("left", "right")
+  private val randomScale = new Random(568) //568
+  private val sides = Vector("left", "right")
   
   def nextPlayer: Unit = {
     currentPlayer = allPlayers((allPlayers.indexOf(currentPlayer) + 1) % allPlayers.size)
@@ -34,7 +33,6 @@ class Game(players: Buffer[Player], weights: Int) {
     //We need the coordinates of the scale we want to put the new scale on.
    val inspectiveScale = scaleCoordinates.find(_._3 == scaleCheck.name).getOrElse(return true)
      if(inspectiveScale._2 <= 104){
-       println("false Y")
        return false
      }
     //We have to find the scales that are around on the same level as the one we want to put.
@@ -46,7 +44,6 @@ class Game(players: Buffer[Player], weights: Int) {
        //If the sum of the sides (one from each scale) is greater than the distance between the points,
        //the scale cannot be put.
        if((scale._4*35 + newRadius*35).abs >= (scale._1 - (inspectiveScale._1 + i*distanceCheck*35)).abs){
-         println("false distances")
          return false
        }
      }
@@ -54,7 +51,7 @@ class Game(players: Buffer[Player], weights: Int) {
    true 
   }
   
-  def playerPoints(startingPoint: Scale, multiplier: Int) {
+ private def playerPoints(startingPoint: Scale, multiplier: Int) {
     var howFar = 1
     
     for(place <- startingPoint.leftArm ++ startingPoint.rightArm) {
@@ -75,8 +72,8 @@ class Game(players: Buffer[Player], weights: Int) {
     allScales.find(n => n.name == scaleName) match {
       
       case Some(scale) => { //Scale might've been found but do other parameters match with the scale?
-        //println("LISÄTTIIN")
         if(distance > scale.distance || distance <= 0) {
+          //This println is just in case a we get a false scale altough it should never happen.
           println("INVALID")
           "Invalid distance. Try again" 
         } else {
